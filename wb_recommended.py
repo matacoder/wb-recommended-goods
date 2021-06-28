@@ -4,7 +4,10 @@ import pandas as pd
 PRODUCTS_LIMIT = 10
 IMPORT_SHEET_NAME = "Общий отчет"
 EXPORT_SHEET_NAME = "Загрузка рекомендаций для WB"
-HEADER = ["Артикул WB", "Связанный артикул WB"]
+HEADER = [
+    "Артикул WB",
+    "Связанный артикул WB",
+]
 IN_STOCK_GOODS = "instock.xlsx"
 OUT_STOCK_GOODS = "outstock.xlsx"
 WBSTAT = "wbstat.xlsx"
@@ -185,19 +188,6 @@ def main():
     # Получаем лист, каждый продукт получает все икс рекомендаций
     stock_recommendations = create_stock_recommendations(data_values, top_products)
 
-    """
-    # Заполняем словарь товарами по категориям
-    products_dict = get_products_by_categories(data_values, categories)
-
-    # Сокращаем словарь до топ продуктов (настраиваемое число)
-    top_in_categories = create_recommended_dict(products_dict)
-
-    # Получаем лист, каждый продукт получает все икс рекомендаций
-    stock_recommendations = create_stock_recommendations(
-        data_values,
-        top_in_categories
-    )
-    """
     # Получаем лист, каждый продукт получает все икс рекомендаций
     out_stock_recommendations = create_stock_recommendations(
         data_values_out_stock, top_products
