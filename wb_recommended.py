@@ -69,18 +69,16 @@ def create_stock_recommendations(data_values, top10_in_categories):
     stoplist = open_xlsx_file(STOPLIST, "Лист1")
     # print(stoplist)
     for line in data_values:
-        product = line[3]
+        # Используем wb_id теперь, а не артикул поставщика
+        product = line[4]
         # проверяем на созданные ВБ артикулы (их может не оказаться)
         if [product] not in stoplist:
-            if "/" not in product:
-                top_products = top10_in_categories.get(line[1])
-                if top_products is not None:
-                    for top_product in top_products:
-                        # нельзя рекомендовать самого себя
-                        if product != top_product:
-                            stock_recommendations.append(
-                                [product, top_product]
-                            )
+            top_products = top10_in_categories.get(line[1])
+            if top_products is not None:
+                for top_product in top_products:
+                    # нельзя рекомендовать самого себя
+                    if product != top_product:
+                        stock_recommendations.append([product, top_product])
     return stock_recommendations
 
 
@@ -122,17 +120,29 @@ def open_xlsx_file(filename, sheetname):
 
 
 def create_sku_category_dic(data_values):
+    """Создаем словарь для категорий."""
     sku_category_dic = {}
     for item in data_values:
-        sku_category_dic[item[3]] = item[1]
+        # Теперь требуется не артикул поставщика, а номенклатура 1С от WB
+        wb_id = item[4]
+        category_name = item[1]
+        sku_category_dic[wb_id] = category_name
     return sku_category_dic
 
 
 def create_sku_wbstatrating(wbstat_sheet):
+    """Создаем словарь wb_id -> рейтинг wbstat."""
     sku_wbstatrating_dic = {}
-    for item in wbstat_sheet:
-        if int(item[15]) > 0:
-            sku_wbstatrating_dic[item[3]] = item[5]
+    for item_idx in range(1, len(wbstat_sheet)):
+        item = wbstat_sheet[item_idx]
+        in_stock = item[15]
+        if int(in_stock) > 0:
+            # Теперь требуется не артикул поставщика, а номенклатура 1С от WB
+            wb_id = item[2]
+            wbstat_rating = item[5]
+            print(wbstat_rating)
+            sku_wbstatrating_dic[wb_id] = wbstat_rating
+
     return sku_wbstatrating_dic
 
 
@@ -142,12 +152,12 @@ def create_category_sku_wbstat(sku_category_dic, sku_wbstatrating_dic, categorie
         category_sku_wbstat[category] = {}
 
     for item in sku_category_dic:
-        try:
-            category_sku_wbstat[sku_category_dic[item]][item] = sku_wbstatrating_dic[
-                item
-            ]
-        except KeyError:
-            pass
+        category = sku_category_dic[item]
+
+        wb_stat_rating = sku_wbstatrating_dic.get(str(item), 0)
+
+        category_sku_wbstat[category][item] = wb_stat_rating
+
     return category_sku_wbstat
 
 
