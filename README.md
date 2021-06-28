@@ -2,6 +2,8 @@
 
 Create WB recommendations based on WBStat service.
 
+<img src=https://raw.githubusercontent.com/matacoder/matacoder/main/wb-recommend.png>
+
 ## What you need
 
 - active subscription to [wbstat.pro](https://wbstat.pro) service
