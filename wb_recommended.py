@@ -2,7 +2,6 @@ import pandas as pd
 
 # Устанавливаем, сколько популярных товаров нам нужно
 PRODUCTS_LIMIT = 10
-BRAND = "Фабрика украшений"
 IMPORT_SHEET_NAME = "Общий отчет"
 EXPORT_SHEET_NAME = "Загрузка рекомендаций для WB"
 HEADER = ["Артикул WB", "Связанный артикул WB"]
@@ -31,7 +30,7 @@ def get_products_by_categories(data_values, categories):
     products_turnover = {}
     for category in categories:
         products_turnover[category] = {}
-    # print(products_turnover)
+
     for line in data_values:
         if line[9] == "Товар на сайте менее 30 дн.":
             turnover = 50
@@ -52,13 +51,12 @@ def create_recommended_dict(products_dict):
     """
     top_products = {}
     for category_name in products_dict:
-        # print(category_name)
         sorted_products = sorted(
             products_dict[category_name],
             key=products_dict[category_name].get,
             reverse=True,
         )
-        # print(sorted_products[:PRODUCTS_LIMIT])
+
         top_products[category_name] = sorted_products[:PRODUCTS_LIMIT]
     return top_products
 
@@ -67,7 +65,7 @@ def create_stock_recommendations(data_values, top10_in_categories):
     stock_recommendations = []
     # Убираем артикулы, которые ВБ не может найти
     stoplist = open_xlsx_file(STOPLIST, "Лист1")
-    # print(stoplist)
+
     for line in data_values:
         # Используем wb_id теперь, а не артикул поставщика
         product = line[4]
@@ -140,7 +138,6 @@ def create_sku_wbstatrating(wbstat_sheet):
             # Теперь требуется не артикул поставщика, а номенклатура 1С от WB
             wb_id = item[2]
             wbstat_rating = item[5]
-            print(wbstat_rating)
             sku_wbstatrating_dic[wb_id] = wbstat_rating
 
     return sku_wbstatrating_dic
@@ -153,9 +150,7 @@ def create_category_sku_wbstat(sku_category_dic, sku_wbstatrating_dic, categorie
 
     for item in sku_category_dic:
         category = sku_category_dic[item]
-
         wb_stat_rating = sku_wbstatrating_dic.get(str(item), 0)
-
         category_sku_wbstat[category][item] = wb_stat_rating
 
     return category_sku_wbstat
