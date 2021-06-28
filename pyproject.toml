@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "wb-recommend"
+version = "0.1.0"
+description = ""
+authors = ["Denis Matakov <denis@matakov.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+pandas = "^1.2.5"
+openpyxl = "^3.0.7"
+xlrd = "^2.0.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

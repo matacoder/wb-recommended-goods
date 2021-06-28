@@ -1,4 +1,3 @@
-# Import pandas
 import pandas as pd
 
 # Устанавливаем, сколько популярных товаров нам нужно
